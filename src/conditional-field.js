@@ -18,11 +18,24 @@ class ConditionalField {
   }
 
   setVisible(value) {
+    
+    let shown = [];
     for(let controlValue in this.args.visibility){
-      if(value == controlValue){
-        $(this.args.visibility[controlValue]).show();
+      
+      const selectors = Array.isArray(this.args.visibility[controlValue]) ? this.args.visibility[controlValue] : [this.args.visibility[controlValue]];
+      if(value === controlValue){
+        shown = [...shown, ...selectors];
+        $(selectors.join(',')).show();
       }else{
-        $(this.args.visibility[controlValue]).hide();
+      
+        if(shown.length === 0){
+          $(selectors.join(',')).hide();
+          continue;
+        }
+
+        // filter out elements that are already shown
+        const res = selectors.filter(item => shown.indexOf(item) === -1);
+        $(res.join(',')).hide();
       }
     }
   }
