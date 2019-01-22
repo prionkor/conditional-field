@@ -2,6 +2,8 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ConditionalField = function () {
@@ -29,11 +31,26 @@ var ConditionalField = function () {
   }, {
     key: 'setVisible',
     value: function setVisible(value) {
+
+      var shown = [];
       for (var controlValue in this.args.visibility) {
-        if (value == controlValue) {
-          $(this.args.visibility[controlValue]).show();
+
+        var selectors = Array.isArray(this.args.visibility[controlValue]) ? this.args.visibility[controlValue] : [this.args.visibility[controlValue]];
+        if (value === controlValue) {
+          shown = [].concat(_toConsumableArray(shown), _toConsumableArray(selectors));
+          $(selectors.join(',')).show();
         } else {
-          $(this.args.visibility[controlValue]).hide();
+
+          if (shown.length === 0) {
+            $(selectors.join(',')).hide();
+            continue;
+          }
+
+          // filter out elements that are already shown
+          var res = selectors.filter(function (item) {
+            return shown.indexOf(item) === -1;
+          });
+          $(res.join(',')).hide();
         }
       }
     }
