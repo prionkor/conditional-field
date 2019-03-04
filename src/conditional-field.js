@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 class ConditionalField {
   constructor(args){
     this.$control = $(args.control);
@@ -69,3 +71,6 @@ class ConditionalField {
     this.$control.off('change', this.onChangeBound);
   }
 }
+
+export default ConditionalField;
+
